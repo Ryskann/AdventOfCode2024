@@ -46,8 +46,6 @@ OBSTRUCTION_MARKER = '#'
 
 GUARD_DEFAULT_DIRECTION = Directions.UP
 
-MAX_GUARD_PATH_LENGHT = 10000
-
 def get_guard_position(map):
     position = np.where(map == GUARD_MARKER)
     return Coordinates(position[0][0], position[1][0])
@@ -124,7 +122,6 @@ def get_all_ostruction_opportunities(obstructions_map, guard_position, historic_
     cpt = 0
     historic_path_lenght = len(historic_path)
     for i, historic_position in enumerate(historic_path):
-        print(f"{i} out of {historic_path_lenght} : {round(i * 100 / historic_path_lenght)}%")
         if not historic_position == guard_position:
             obstructions_map[historic_position.x, historic_position.y] = True
             _, _, is_blocked = get_path(obstructions_map, guard_position, False)
