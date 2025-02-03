@@ -1,6 +1,7 @@
 import numpy as np
 import math
 import datetime
+import time
 
 class Coordinates:
     def __init__(self, x, y):
@@ -77,32 +78,31 @@ def get_safety_factor(robots, max_x, max_y):
                 q4 += 1
     return q1 * q2 * q3 * q4
 
-def print_robots(robots, max_x, max_y):
-    picture = []
-    for _ in range(max_x):
-        picture_line = []
-        for _ in range(max_y):
-            picture_line.append('.')
-        picture.append(picture_line)
-    for x in range(max_x):
-        for y in range(max_y):
-            for robot in robots:
-                if robot.position == Coordinates(x, y):
-                    picture[x][y] = 'X'
-    printable_picture = ""
-    for x in range(max_x):
-        for y in range(max_y):
-            printable_picture += picture[x][y]
-        printable_picture += '\n'
-    print(printable_picture)
+def print_robots(robots, max_x, max_y, second):
+    position_list = np.array([])
+    for robot in robots:
+        position_list = np.append(position_list, [robot.position])
+    result_img = ""
+    for y in range(max_y):
+        time.sleep(0.05)
+        result_line = ""
+        for x in range(max_x):
+            if Coordinates(x, y) in position_list:
+                result_line += '@'
+            else:
+                result_line += ' '
+        result_img += result_line + " - " + str(second) + '\n'
+    return result_img
 
 def emulate_and_print(robots, seconds , max_x, max_y, each = 1):
+    result_total = ""
     for second in range(seconds):
         for robot in robots:
             robot.emulate_seconds(1)
         if second % each == 0:
-            print(f"Second : {second} for picture bellow")
-            print_robots(robots, max_x, max_y)
+            result_total += print_robots(robots, max_x, max_y, second + 1)
+    with open("result.txt", "w") as f:
+        f.write(result_total)
       
 
 WIDTH = 101 #101 #11
